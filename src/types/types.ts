@@ -5,5 +5,7 @@ export interface Type_RepoData {
 
 export interface Type_Storage {
   id: string;
-  issues_url: string;
+  full_name: string;
+  issue_count: number;
+  items?: any;
 }

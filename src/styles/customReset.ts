@@ -107,6 +107,7 @@ export const customReset = css`
     text-decoration: none;
     color: #111111;
     line-height: 1;
+    cursor: pointer;
   }
 
   a:hover,
@@ -156,7 +157,7 @@ export const customReset = css`
   }
 
   b {
-    font-weight: 700 !important;
+    font-weight: 600 !important;
   }
 
   textarea {

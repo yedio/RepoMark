@@ -4,9 +4,8 @@ import axios from "axios";
 import styled from "styled-components";
 import Input from "../../components/Input";
 import Pagination from "../../components/Pagination";
-import { PER_PAGE } from "../../config";
+import { API_BASEURL, HEADER, PER_PAGE } from "../../config";
 import { Type_RepoData, Type_Storage } from "../../types/types";
-
 import { addComma, formatDate, getParamsValue } from "../../utils/utils";
 
 export default function Repository() {
@@ -25,7 +24,11 @@ export default function Repository() {
     setCurrentIdx(1);
   };
 
-  const setStorage = (id: string, issues_url: string) => {
+  const setStorage = (
+    id: string,
+    full_name: string = "",
+    issue_count: number = 0
+  ) => {
     const storage = store;
 
     const findId = store.findIndex((e) => e.id === id);
@@ -33,7 +36,7 @@ export default function Repository() {
       storage.splice(findId, 1);
     } else {
       if (storage.length < 4) {
-        storage.push({ id, issues_url });
+        storage.push({ id, full_name, issue_count });
       } else {
         window.alert("4개 이상 등록하실 수 없습니다.");
       }
@@ -46,13 +49,11 @@ export default function Repository() {
   console.log("storage", store);
 
   const getData = async () => {
-    const url = `https://api.github.com/search/repositories?q=${searchValue}&per_page=${PER_PAGE}&page=${currentIdx}`;
+    const url = `${API_BASEURL}search/repositories?q=${searchValue}&per_page=${PER_PAGE}&page=${currentIdx}`;
 
     await axios
       .get(url, {
-        headers: {
-          Accept: "application/vnd.github.nightshade-preview+json",
-        },
+        headers: HEADER,
       })
       .then((res) => {
         if (res.status === 200) {
@@ -93,12 +94,24 @@ export default function Repository() {
           Search
         </SearchInputBtn>
       </SearchWrap>
+      <StorageWrap>
+        <StorageTitle>Bookmark</StorageTitle>
+        <StorageList>
+          {store.map((data) => (
+            <StorageItem key={data.id}>
+              {data.full_name}
+              <DeleteBtn onClick={() => setStorage(data.id)}>
+                <img src="images/button/close.svg" alt="close" />
+              </DeleteBtn>
+            </StorageItem>
+          ))}
+        </StorageList>
+      </StorageWrap>
       <SearchResultWrap>
         <SearchResultInfoWrap>
           <SearchResultTitle>
             {repoList && addComma(repoList?.total_count)} repository results
           </SearchResultTitle>
-          <SearchFilterWrap></SearchFilterWrap>
         </SearchResultInfoWrap>
         <ResultListWrap>
           {repoList?.items &&
@@ -119,7 +132,11 @@ export default function Repository() {
                     <span>Updated on {formatDate(data.pushed_at)}</span>
                   </SubInfo>
                 </Info>
-                <AddBtn onClick={() => setStorage(data.id, data.issues_url)}>
+                <AddBtn
+                  onClick={() =>
+                    setStorage(data.id, data.full_name, data.open_issues_count)
+                  }
+                >
                   {store.findIndex((e) => e.id === data.id) < 0 ? (
                     <img src="/images/button/plus.svg" alt="plus" />
                   ) : (
@@ -157,12 +174,6 @@ const SearchResultWrap = styled.div`
   font-size: 20px;
 `;
 
-const SearchFilterWrap = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 22px;
-`;
-
 const SearchResultTitle = styled.span`
   color: #5b5b5b;
   font-weight: 400px;
@@ -181,6 +192,40 @@ const SearchInputBtn = styled.button`
   background-color: pink;
   border-radius: 10px;
   font-size: 14px;
+`;
+
+const StorageWrap = styled.div`
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid black;
+`;
+
+const StorageTitle = styled.h2`
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const StorageList = styled.ul`
+  display: flex;
+`;
+
+const StorageItem = styled.li`
+  font-size: 14px;
+  position: relative;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 5px 25px 5px 5px;
+`;
+
+const DeleteBtn = styled.button`
+  width: 10px;
+  position: absolute;
+  top: 3px;
+  right: 5px;
+
+  img {
+    cursor: pointer;
+  }
 `;
 
 const ResultListWrap = styled.div`
