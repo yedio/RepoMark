@@ -6,6 +6,8 @@ import TabMenu from "../../components/TabMenu";
 import { API_BASEURL, HEADER, PER_PAGE } from "../../config";
 import { Type_Storage } from "../../types/types";
 import { addComma, formatDate } from "../../utils/utils";
+import MenuTitle from "../../components/MenuTitle";
+import { defaultBorder } from "../../styles/mixin";
 
 export default function Issues() {
   const getStorage = localStorage.getItem("storage");
@@ -66,11 +68,14 @@ export default function Issues() {
 
   return (
     <Wrap>
-      <TabMenu
-        title={MENU_LIST}
-        clickedMenu={clickedMenu}
-        changeMenu={changeMenu}
-      />
+      <MenuTitle title="Issues" />
+      {MENU_LIST && MENU_LIST.length > 0 && (
+        <TabMenu
+          title={MENU_LIST}
+          clickedMenu={clickedMenu}
+          changeMenu={changeMenu}
+        />
+      )}
       <SearchResultWrap>
         <SearchResultInfoWrap>
           <SearchResultTitle>{addComma(totalCnt)} issues</SearchResultTitle>
@@ -111,7 +116,7 @@ export default function Issues() {
               </ResultList>
             ))}
         </ResultListWrap>
-        {issueList && (
+        {issueList && totalCnt > 0 && (
           <Pagination
             totalDataCnt={totalCnt}
             currentIdx={currentIdx}
@@ -123,9 +128,7 @@ export default function Issues() {
   );
 }
 
-const Wrap = styled.div`
-  padding-top: 50px;
-`;
+const Wrap = styled.div``;
 
 const SearchResultInfoWrap = styled.div`
   display: flex;
@@ -136,7 +139,12 @@ const SearchResultInfoWrap = styled.div`
 `;
 
 const SearchResultWrap = styled.div`
-  font-size: 20px;
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  ${defaultBorder}
 `;
 
 const SearchFilterWrap = styled.div`
@@ -147,7 +155,8 @@ const SearchFilterWrap = styled.div`
 
 const SearchResultTitle = styled.span`
   color: #5b5b5b;
-  font-weight: 400px;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const ResultListWrap = styled.div`
@@ -159,7 +168,7 @@ const ResultList = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid black;
+  border-top: 1px solid ${({ theme }) => theme.inputBorder};
   padding: 24px 0px;
 `;
 
@@ -184,10 +193,10 @@ const Name = styled.a`
 
 const Title = styled.a`
   font-size: 16px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.linkHover} !important;
+  font-weight: bold;
+  color: ${({ theme }) => theme.main} !important;
   cursor: pointer;
-
+  word-break: break-all;
   &:hover {
     text-decoration: underline;
   }

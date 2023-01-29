@@ -161,14 +161,14 @@ const PrevBtn = styled.li`
 const NumberBtn = styled.li`
   button {
     &:hover {
-      color: ${({ theme }) => theme.linkHover};
+      color: ${({ theme }) => theme.main};
       font-weight: 500;
       text-decoration: underline;
       cursor: pointer;
     }
 
     &.active {
-      color: ${({ theme }) => theme.linkHover};
+      color: ${({ theme }) => theme.main};
       font-weight: 500;
       text-decoration: underline;
       cursor: default;

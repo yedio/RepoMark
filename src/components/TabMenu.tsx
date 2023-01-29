@@ -30,16 +30,19 @@ const Wrapper = styled.ul<{ menuLength: number }>`
   justify-content: flex-start;
   align-items: center;
   padding: 5px;
-  margin-bottom: 20px;
-  margin-top: 20px;
   width: 100%;
   border: 1px solid #dfdfdf;
-  border-radius: 5px;
+  border-radius: 10px;
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+  }
 
   li {
-    width: 20%;
     width: ${(props) => (100 / props.menuLength).toString() + "%"};
-
+    @media (max-width: 720px) {
+      width: 100%;
+    }
     &.active {
       cursor: default;
       pointer-events: none;
@@ -52,10 +55,10 @@ const TabLink = styled.a`
   padding: 5px 20px 6px;
   width: 100%;
   color: ${({ theme }) => theme.subColor};
-  border-radius: 3px;
+  border-radius: 10px;
   text-align: center;
   line-height: 1.4;
-  word-break: keep-all;
+  word-break: break-all;
   font-size: 14px;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -68,7 +71,7 @@ const TabLink = styled.a`
 
   &.active {
     color: #fff;
-    background: red;
+    background: ${({ theme }) => theme.main};
     transition: all 0.3s ease;
   }
 `;

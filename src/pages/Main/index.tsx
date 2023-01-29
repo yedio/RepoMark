@@ -14,7 +14,9 @@ export default function Main() {
   return (
     <Wrap>
       <Title>
-        관심있는 Repository를 등록하여 issue들을 한 눈에 모아보세요!
+        관심 있는 <span className="point">Repository</span>를 등록하여
+        <br />
+        <span className="point">Issue</span>를 한눈에 모아보세요 !
       </Title>
       <SearchWrap>
         <Input
@@ -29,7 +31,7 @@ export default function Main() {
           onClick={() => moveToSearch()}
         >
           <img
-            src="/images/search_off.svg"
+            src={`/images/search_${searchValue.length > 0 ? "on" : "off"}.svg`}
             alt="search"
             className={searchValue.length > 0 ? "" : "disable"}
           />
@@ -44,13 +46,26 @@ const Wrap = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 64px);
+  /* min-height: calc(100vh - 64px); */
+  min-height: calc(100vh - 200px);
   gap: 20px;
 `;
 
 const Title = styled.h1`
   font-size: 30px;
   font-weight: bold;
+  text-align: center;
+  line-height: 1.3;
+
+  span {
+    &.point {
+      color: ${({ theme }) => theme.main};
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 25px;
+  }
 `;
 
 const SearchWrap = styled.div`
@@ -61,8 +76,8 @@ const SearchWrap = styled.div`
 
 const SearchInputBtn = styled.button`
   position: absolute;
-  top: -1px;
-  right: 0;
+  top: 10px;
+  right: 10px;
   font-size: 14px;
 
   img {

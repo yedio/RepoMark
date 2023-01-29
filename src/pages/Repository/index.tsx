@@ -7,6 +7,8 @@ import Pagination from "../../components/Pagination";
 import { API_BASEURL, HEADER, PER_PAGE } from "../../config";
 import { Type_RepoData, Type_Storage } from "../../types/types";
 import { addComma, formatDate, getParamsValue } from "../../utils/utils";
+import MenuTitle from "../../components/MenuTitle";
+import { defaultBorder, defaultBtn } from "../../styles/mixin";
 
 export default function Repository() {
   const navigate = useNavigate();
@@ -46,8 +48,6 @@ export default function Repository() {
     setStore(storage);
   };
 
-  console.log("storage", store);
-
   const getData = async () => {
     const url = `${API_BASEURL}search/repositories?q=${searchValue}&per_page=${PER_PAGE}&page=${currentIdx}`;
 
@@ -57,7 +57,6 @@ export default function Repository() {
       })
       .then((res) => {
         if (res.status === 200) {
-          console.log("re", res.data);
           setRepoList({
             total_count: res.data.total_count,
             items: res.data.items,
@@ -67,7 +66,9 @@ export default function Repository() {
   };
 
   useEffect(() => {
-    getData();
+    if (searchValue) {
+      getData();
+    }
   }, [currentIdx]);
 
   useEffect(() => {
@@ -78,11 +79,12 @@ export default function Repository() {
 
   return (
     <Wrap>
+      <MenuTitle title="Repository" />
       <SearchWrap>
         <Input
           placeholder="찾고 싶은 repository를 검색해 보세요"
           value={searchValue}
-          height="32px"
+          height="40px"
           onChange={(e) => setSearchValue(e.target.value)}
           onKeyPressEvent={moveToSearch}
         />
@@ -94,131 +96,164 @@ export default function Repository() {
           Search
         </SearchInputBtn>
       </SearchWrap>
-      <StorageWrap>
-        <StorageTitle>Bookmark</StorageTitle>
-        <StorageList>
-          {store.map((data) => (
-            <StorageItem key={data.id}>
-              {data.full_name}
-              <DeleteBtn onClick={() => setStorage(data.id)}>
-                <img src="images/button/close.svg" alt="close" />
-              </DeleteBtn>
-            </StorageItem>
-          ))}
-        </StorageList>
-      </StorageWrap>
-      <SearchResultWrap>
-        <SearchResultInfoWrap>
+      <Container>
+        <StorageWrap>
+          <StorageTitle>Bookmark</StorageTitle>
+          <StorageList>
+            {store.length > 0 ? (
+              store.map((data) => (
+                <StorageItem key={data.id}>
+                  {data.full_name}
+                  <DeleteBtn onClick={() => setStorage(data.id)}>
+                    <img src="images/button/close.svg" alt="close" />
+                  </DeleteBtn>
+                </StorageItem>
+              ))
+            ) : (
+              <NoStorageItem>등록된 Repository가 없습니다.</NoStorageItem>
+            )}
+          </StorageList>
+        </StorageWrap>
+        <SearchResultWrap>
           <SearchResultTitle>
             {repoList && addComma(repoList?.total_count)} repository results
           </SearchResultTitle>
-        </SearchResultInfoWrap>
-        <ResultListWrap>
-          {repoList?.items &&
-            repoList.items.map((data: any) => (
-              <ResultList key={data.id}>
-                <Info>
-                  <Name href={data.html_url} target="_blank">
-                    {data.full_name}
-                  </Name>
-                  {data.description && <Desc>{data.description}</Desc>}
-                  <SubInfo>
-                    {data.stargazers_count > 0 && (
-                      <span className="link">
-                        ⭐️ {addComma(data.stargazers_count)}
-                      </span>
+          <ResultListWrap>
+            {repoList?.items && repoList.items.length > 0 ? (
+              repoList.items.map((data: any) => (
+                <ResultList key={data.id}>
+                  <Info>
+                    <Name href={data.html_url} target="_blank">
+                      {data.full_name}
+                    </Name>
+                    {data.description && <Desc>{data.description}</Desc>}
+                    <SubInfo>
+                      {data.stargazers_count > 0 && (
+                        <span className="link">
+                          ⭐️ {addComma(data.stargazers_count)}
+                        </span>
+                      )}
+                      {data.language && <span>{data.language}</span>}
+                      <span>Updated on {formatDate(data.pushed_at)}</span>
+                    </SubInfo>
+                  </Info>
+                  <AddBtn
+                    onClick={() =>
+                      setStorage(
+                        data.id,
+                        data.full_name,
+                        data.open_issues_count
+                      )
+                    }
+                  >
+                    {store.findIndex((e) => e.id === data.id) < 0 ? (
+                      <img src="/images/button/plus.svg" alt="plus" />
+                    ) : (
+                      <img src="/images/button/minus.svg" alt="minus" />
                     )}
-                    {data.language && <span>{data.language}</span>}
-                    <span>Updated on {formatDate(data.pushed_at)}</span>
-                  </SubInfo>
-                </Info>
-                <AddBtn
-                  onClick={() =>
-                    setStorage(data.id, data.full_name, data.open_issues_count)
-                  }
-                >
-                  {store.findIndex((e) => e.id === data.id) < 0 ? (
-                    <img src="/images/button/plus.svg" alt="plus" />
-                  ) : (
-                    <img src="/images/button/minus.svg" alt="minus" />
-                  )}
-                </AddBtn>
-              </ResultList>
-            ))}
-        </ResultListWrap>
-        {repoList && (
-          <Pagination
-            totalDataCnt={repoList.total_count}
-            currentIdx={currentIdx}
-            setCurrentIdx={setCurrentIdx}
-          />
-        )}
-      </SearchResultWrap>
+                  </AddBtn>
+                </ResultList>
+              ))
+            ) : (
+              <NoListItem>검색된 결과가 없습니다.</NoListItem>
+            )}
+          </ResultListWrap>
+          {repoList && repoList.total_count > 0 && (
+            <Pagination
+              totalDataCnt={repoList.total_count}
+              currentIdx={currentIdx}
+              setCurrentIdx={setCurrentIdx}
+            />
+          )}
+        </SearchResultWrap>
+      </Container>
     </Wrap>
   );
 }
 
-const Wrap = styled.div`
-  padding-top: 50px;
-`;
+const Wrap = styled.div``;
 
-const SearchResultInfoWrap = styled.div`
+const Container = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-top: 8px;
-  margin-bottom: 30px;
+  gap: 20px;
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+  }
 `;
 
 const SearchResultWrap = styled.div`
-  font-size: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+  ${defaultBorder}
 `;
 
 const SearchResultTitle = styled.span`
   color: #5b5b5b;
-  font-weight: 400px;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const SearchWrap = styled.div`
   display: flex;
   justify-content: center;
-  width: 90%;
+  align-items: center;
   gap: 7px;
+  margin-bottom: 20px;
 `;
 
 const SearchInputBtn = styled.button`
-  border: 1px solid black;
-  padding: 5px;
-  background-color: pink;
-  border-radius: 10px;
-  font-size: 14px;
+  ${defaultBtn}
 `;
 
 const StorageWrap = styled.div`
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid black;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 84px;
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  width: 360px;
+  padding: 20px;
+  gap: 20px;
+  ${defaultBorder}
+
+  @media (max-width: 720px) {
+    width: 100%;
+    position: inherit;
+  }
 `;
 
 const StorageTitle = styled.h2`
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 `;
 
 const StorageList = styled.ul`
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  gap: 10px;
+  background-color: ${({ theme }) => theme.back};
 `;
 
 const StorageItem = styled.li`
-  font-size: 14px;
+  font-size: 13px;
   position: relative;
-  border: 1px solid black;
+  border: 1px solid ${({ theme }) => theme.inputBorder};
   border-radius: 6px;
   padding: 5px 25px 5px 5px;
+  background-color: #fff;
 `;
 
 const DeleteBtn = styled.button`
-  width: 10px;
+  width: 8px;
   position: absolute;
   top: 3px;
   right: 5px;
@@ -226,6 +261,16 @@ const DeleteBtn = styled.button`
   img {
     cursor: pointer;
   }
+`;
+
+const NoStorageItem = styled.li`
+  font-size: 14px;
+  margin: 10px auto;
+`;
+
+const NoListItem = styled.li`
+  font-size: 14px;
+  margin: 50px auto;
 `;
 
 const ResultListWrap = styled.div`
@@ -237,7 +282,7 @@ const ResultList = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid black;
+  border-top: 1px solid ${({ theme }) => theme.inputBorder};
   padding: 24px 0px;
 `;
 
@@ -260,7 +305,7 @@ const AddBtn = styled.button`
 const Name = styled.a`
   font-size: 16px;
   font-weight: bold;
-  color: ${({ theme }) => theme.linkHover} !important;
+  color: ${({ theme }) => theme.main} !important;
   cursor: pointer;
 
   &:hover {
@@ -277,6 +322,11 @@ const SubInfo = styled.div`
   display: flex;
   gap: 10px;
   font-size: 12px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 5px;
+  }
 
   span {
     &.link {

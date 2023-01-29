@@ -49,7 +49,7 @@ const CustomInput = styled.input<{ width?: string; height?: string }>`
   height: ${(props) => `${props.height}`};
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid black;
+  border: 1px solid ${({ theme }) => theme.inputBorder};
   cursor: text;
 
   &::placeholder {
@@ -57,7 +57,7 @@ const CustomInput = styled.input<{ width?: string; height?: string }>`
   }
 
   &:focus {
-    border: 2px solid #d1ccd8;
+    border: 2px solid ${({ theme }) => theme.inputBorderFocus};
   }
 
   &.error {

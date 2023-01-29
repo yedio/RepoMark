@@ -50,14 +50,14 @@ export const customReset = css`
   button {
     margin: 0;
     padding: 0;
-    color: #111111;
-    font-family: "Poppins", "Pretendard Variable";
+    color: #272b41;
+    font-family: "Montserrat", "Pretendard Variable";
     border: 0;
   }
 
   body {
-    color: #111111;
-    font-size: 16px;
+    background: #fbfbfb;
+    color: #272b41;
     font-weight: 400;
     line-height: 1;
     overflow-x: hidden;
@@ -105,7 +105,7 @@ export const customReset = css`
 
   a {
     text-decoration: none;
-    color: #111111;
+    color: #272b41;
     line-height: 1;
     cursor: pointer;
   }
@@ -117,7 +117,7 @@ export const customReset = css`
   }
 
   a:visited {
-    color: #111111;
+    color: #272b41;
   }
 
   button {

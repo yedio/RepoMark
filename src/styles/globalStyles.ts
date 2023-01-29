@@ -4,7 +4,7 @@ import { customReset } from "./customReset";
 
 const globalStyle = createGlobalStyle`
     ${reset};
-    ${customReset}
+    ${customReset};
 `;
 
 export default globalStyle;
