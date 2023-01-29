@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import Input from "../../components/Input";
 import Pagination from "../../components/Pagination";
-import useRepoData from "../../queries/useRepoData";
+import { PER_PAGE } from "../../config";
+import { Type_RepoData, Type_Storage } from "../../types/types";
 
 import { addComma, formatDate, getParamsValue } from "../../utils/utils";
 
@@ -11,14 +13,67 @@ export default function Repository() {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState(getParamsValue("keyword"));
   const [currentIdx, setCurrentIdx] = useState<number>(1);
-
-  const { data: searchData } = useRepoData(searchValue, currentIdx);
+  const [repoList, setRepoList] = useState<Type_RepoData>({
+    total_count: 0,
+    items: [],
+  });
+  const [store, setStore] = useState<Type_Storage[]>([]);
 
   const moveToSearch = () => {
     navigate(`/repository?keyword=${encodeURIComponent(searchValue)}`);
-
-    setCurrentIdx(0);
+    getData();
+    setCurrentIdx(1);
   };
+
+  const setStorage = (id: string, issues_url: string) => {
+    const storage = store;
+
+    const findId = store.findIndex((e) => e.id === id);
+    if (findId !== -1) {
+      storage.splice(findId, 1);
+    } else {
+      if (storage.length < 4) {
+        storage.push({ id, issues_url });
+      } else {
+        window.alert("4개 이상 등록하실 수 없습니다.");
+      }
+    }
+
+    localStorage.setItem("storage", JSON.stringify(storage));
+    setStore(storage);
+  };
+
+  console.log("storage", store);
+
+  const getData = async () => {
+    const url = `https://api.github.com/search/repositories?q=${searchValue}&per_page=${PER_PAGE}&page=${currentIdx}`;
+
+    await axios
+      .get(url, {
+        headers: {
+          Accept: "application/vnd.github.nightshade-preview+json",
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("re", res.data);
+          setRepoList({
+            total_count: res.data.total_count,
+            items: res.data.items,
+          });
+        }
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, [currentIdx]);
+
+  useEffect(() => {
+    const getStorage = localStorage.getItem("storage");
+    const storage = getStorage ? JSON.parse(getStorage) : [];
+    setStore(storage);
+  }, []);
 
   return (
     <Wrap>
@@ -41,13 +96,13 @@ export default function Repository() {
       <SearchResultWrap>
         <SearchResultInfoWrap>
           <SearchResultTitle>
-            {searchData && addComma(searchData.total_count)} repository results
+            {repoList && addComma(repoList?.total_count)} repository results
           </SearchResultTitle>
           <SearchFilterWrap></SearchFilterWrap>
         </SearchResultInfoWrap>
         <ResultListWrap>
-          {searchData?.items &&
-            searchData.items.map((data: any) => (
+          {repoList?.items &&
+            repoList.items.map((data: any) => (
               <ResultList key={data.id}>
                 <Info>
                   <Name href={data.html_url} target="_blank">
@@ -64,15 +119,19 @@ export default function Repository() {
                     <span>Updated on {formatDate(data.pushed_at)}</span>
                   </SubInfo>
                 </Info>
-                <AddBtn>
-                  <img src="/images/button/plus.svg" alt="plus" />
+                <AddBtn onClick={() => setStorage(data.id, data.issues_url)}>
+                  {store.findIndex((e) => e.id === data.id) < 0 ? (
+                    <img src="/images/button/plus.svg" alt="plus" />
+                  ) : (
+                    <img src="/images/button/minus.svg" alt="minus" />
+                  )}
                 </AddBtn>
               </ResultList>
             ))}
         </ResultListWrap>
-        {searchData && (
+        {repoList && (
           <Pagination
-            totalDataCnt={Number(searchData.total_count)}
+            totalDataCnt={repoList.total_count}
             currentIdx={currentIdx}
             setCurrentIdx={setCurrentIdx}
           />

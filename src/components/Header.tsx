@@ -11,7 +11,7 @@ export default function Header() {
         <NavList onClick={() => navigate("/repository?keyword=&")}>
           Repository
         </NavList>
-        <NavList onClick={() => navigate("/issue")}>Issue</NavList>
+        <NavList onClick={() => navigate("/issues")}>Issues</NavList>
       </NavWrap>
     </Wrap>
   );

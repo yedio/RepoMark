@@ -5,7 +5,7 @@ const defaultOption = {
   baseURL: API_BASEURL,
   headers: {
     Accept: "application/json",
-    Authorization: `Bearer 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`,
+    // Authorization: `Bearer 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`,
   },
 };
 
