@@ -44,8 +44,31 @@ export default function Repository() {
       }
     }
 
+    setStore([...storage]);
     localStorage.setItem("storage", JSON.stringify(storage));
-    setStore(storage);
+  };
+
+  const searchHighlight = (text: string) => {
+    const title = text.toLowerCase();
+    const value = searchValue.toLowerCase();
+    if (value !== "" && title.includes(value)) {
+      const matchText = text.split(new RegExp(`(${value})`, "gi"));
+      return (
+        <>
+          {matchText.map((text, index) =>
+            text.toLowerCase() === searchValue.toLowerCase() ? (
+              <span key={index} style={{ fontWeight: 600 }}>
+                {text}
+              </span>
+            ) : (
+              text
+            )
+          )}
+        </>
+      );
+    }
+
+    return text;
   };
 
   const getData = async () => {
@@ -58,6 +81,7 @@ export default function Repository() {
       .then((res) => {
         if (res.status === 200) {
           setRepoList({
+            ...repoList,
             total_count: res.data.total_count,
             items: res.data.items,
           });
@@ -124,7 +148,7 @@ export default function Repository() {
                 <ResultList key={data.id}>
                   <Info>
                     <Name href={data.html_url} target="_blank">
-                      {data.full_name}
+                      {searchHighlight(data.full_name)}
                     </Name>
                     {data.description && <Desc>{data.description}</Desc>}
                     <SubInfo>
@@ -246,6 +270,7 @@ const StorageList = styled.ul`
 const StorageItem = styled.li`
   font-size: 13px;
   position: relative;
+  word-break: break-all;
   border: 1px solid ${({ theme }) => theme.inputBorder};
   border-radius: 6px;
   padding: 5px 25px 5px 5px;
@@ -304,9 +329,13 @@ const AddBtn = styled.button`
 
 const Name = styled.a`
   font-size: 16px;
-  font-weight: bold;
   color: ${({ theme }) => theme.main} !important;
   cursor: pointer;
+
+  span {
+    color: ${({ theme }) => theme.main} !important;
+    cursor: pointer;
+  }
 
   &:hover {
     text-decoration: underline;
@@ -332,7 +361,7 @@ const SubInfo = styled.div`
     &.link {
       cursor: pointer;
       &:hover {
-        color: ${({ theme }) => theme.linkHover};
+        color: ${({ theme }) => theme.main};
       }
     }
   }

@@ -59,7 +59,8 @@ const TabLink = styled.a`
   text-align: center;
   line-height: 1.4;
   word-break: break-all;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
   transition: all 0.3s ease;
   cursor: pointer;
 

@@ -13,11 +13,6 @@ interface Props {
   error?: boolean;
 }
 
-/**
- *
- * @param type text(default) number
- */
-
 export default function Input({
   width = "100%",
   height = "44px",
