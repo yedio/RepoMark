@@ -15,11 +15,10 @@ export default function Issues() {
   const MENU_LIST = storage.map((e: Type_Storage) => e.full_name);
 
   const [clickedMenu, setClickedMenu] = useState<string>(MENU_LIST[0]);
+  const [store, setStore] = useState<Type_Storage[]>(storage);
+  const [issueList, setIssueList] = useState([]);
   const [currentIdx, setCurrentIdx] = useState<number>(1);
   const [totalCnt, setTotalCnt] = useState<number>(0);
-
-  const [issueList, setIssueList] = useState([]);
-  const [store, setStore] = useState<Type_Storage[]>(storage);
 
   const changeMenu = (menu: string) => {
     setClickedMenu(menu);

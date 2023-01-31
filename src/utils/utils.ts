@@ -25,7 +25,6 @@ export const formatDate = (data: string) => {
   const d = convertDate.getDate();
   const hh = convertDate.getHours();
   const mm = convertDate.getMinutes();
-  const ss = convertDate.getSeconds();
 
   const date = `${addZeroDate(y)}-${addZeroDate(m)}-${addZeroDate(d)}`;
   const time = `${addZeroDate(hh)}:${addZeroDate(mm)}`;
