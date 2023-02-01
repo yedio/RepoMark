@@ -1,46 +1,46 @@
-# Getting Started with Create React App
+# Repo Mark
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+관심있는 repository를 북마크에 등록하고, 등록한 repository의 issue들을 모아볼 수 있는 서비스입니다.
 
-## Available Scripts
+## Preview
 
-In the project directory, you can run:
+### main page
+![main](https://user-images.githubusercontent.com/82350743/215775939-ffd6c661-ebda-4648-b83f-cc4af7cb3c6d.png)
 
-### `npm start`
+### repository page
+![repository](https://user-images.githubusercontent.com/82350743/215776505-fb01d701-4873-4176-b8ed-cd5ea6713cb4.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### issues page
+![issues](https://user-images.githubusercontent.com/82350743/215776605-ef557764-9bb0-4e0c-9daa-0743fb0a9c66.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### responsive web
+![repomark_반응형](https://user-images.githubusercontent.com/82350743/215781541-b46518d1-3d8a-44bb-af4a-038eae780baf.gif)
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 프로젝트 설정 및 실행 방법
 
-### `npm run build`
+```sh
+# Clone this repository
+$ git clone https://github.com/yedio/RepoMark.git
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Go into the repository
+$ cd RepoMark
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Install dependencies
+$ npm install
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Run the app
+$ npm start
+```
 
-### `npm run eject`
+## 프로젝트 사용 방법
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. 검색창에 Repository를 입력합니다.
+2. 북마크에 등록하고 싶은 Repository의 +버튼을 늘러 등록합니다
+3. 북마크는 최대 4개까지 등록할 수 있으며, repository의 -버튼을 누르거나 북마크에서 삭제할 수 있습니다.
+   (제목을 누르면 해당 repository 페이지로 넘어갑니다)
+4. 등록된 repository의 issue들은 issue페이지에서 확인할 수 있습니다. (제목을 누르면 해당 issue 페이지로 넘어갑니다)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 기술스택
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+`react.js` `javascript` `typescript` `styled-components`
